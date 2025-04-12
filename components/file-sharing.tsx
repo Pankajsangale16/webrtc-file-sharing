@@ -11,8 +11,10 @@ import { Separator } from "@/components/ui/separator"
 import { Progress } from "@/components/ui/progress"
 import { ArrowDownToLine, ArrowUpFromLine, Copy, LinkIcon, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function FileSharing() {
+  const { toast } = useToast()
   // Connection states
   const [myPeerId, setMyPeerId] = useState<string>("")
   const [remotePeerId, setRemotePeerId] = useState<string>("")
@@ -197,8 +199,21 @@ export default function FileSharing() {
   }
 
   // Copy peer ID to clipboard
-  const copyPeerId = () => {
-    navigator.clipboard.writeText(myPeerId)
+  const copyPeerId = async () => {
+    try {
+      await navigator.clipboard.writeText(myPeerId)
+      toast({
+        title: "Copied to clipboard",
+        description: "Your peer ID has been copied to the clipboard",
+      })
+    } catch (err) {
+      console.error("Failed to copy:", err)
+      toast({
+        title: "Failed to copy",
+        description: "Could not copy to clipboard. Please try again.",
+        variant: "destructive",
+      })
+    }
   }
 
   // Reset received file

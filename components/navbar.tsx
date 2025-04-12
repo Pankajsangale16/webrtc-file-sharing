@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X } from "lucide-react";
@@ -8,6 +8,11 @@ import { Moon, Sun, Menu, X } from "lucide-react";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -35,8 +40,9 @@ export default function Navbar() {
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-full text-foreground/80 hover:text-foreground hover:bg-white/10 dark:hover:bg-black/10 transition-all duration-300"
+                aria-label="Toggle theme"
               >
-                {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+                {mounted ? (theme === "dark" ? <Sun size={20} /> : <Moon size={20} />) : <Moon size={20} />}
               </button>
             </div>
           </div>
@@ -46,6 +52,7 @@ export default function Navbar() {
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 rounded-full text-foreground/80 hover:text-foreground hover:bg-white/10 dark:hover:bg-black/10 transition-all duration-300"
+              aria-label="Toggle menu"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -73,7 +80,7 @@ export default function Navbar() {
               onClick={toggleTheme}
               className="w-full text-left text-foreground/80 hover:text-foreground block px-3 py-2 rounded-md text-base font-medium"
             >
-              {theme === "dark" ? "Light Mode" : "Dark Mode"}
+              {mounted ? (theme === "dark" ? "Light Mode" : "Dark Mode") : "Dark Mode"}
             </button>
           </div>
         </div>
